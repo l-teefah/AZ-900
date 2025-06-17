@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ-900 Azure Networking Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="network" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/><line x1="10" y1="10" x2="30" y2="10" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/><line x1="10" y1="10" x2="10" y2="30" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23network)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-container {
+            padding: 40px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            width: 0%;
+            transition: width 0.4s ease;
+            box-shadow: 0 2px 4px rgba(30,60,114,0.3);
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            border-left: 5px solid #1e3c72;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            margin-bottom: 12px;
+        }
+
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 18px 25px;
+            background: #ffffff;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .option label:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #1e3c72;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(30,60,114,0.2);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.3);
+            accent-color: #1e3c72;
+        }
+
+        .option.correct label {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+            color: #155724;
+            box-shadow: 0 4px 15px rgba(40,167,69,0.2);
+        }
+
+        .option.incorrect label {
+            background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%);
+            border-color: #dc3545;
+            color: #721c24;
+            box-shadow: 0 4px 15px rgba(220,53,69,0.2);
+        }
+
+        .explanation {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%);
+            border-left: 5px solid #1e3c72;
+            border-radius: 8px;
+            font-size: 1em;
+            line-height: 1.6;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .explanation h4 {
+            color: #1e3c72;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30,60,114,0.3);
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(30,60,114,0.4);
+        }
+
+        .btn:disabled {
+            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3em;
+            margin: 20px 0;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .score-circle {
+            display: inline-block;
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-size: 1.4em;
+            font-weight: bold;
+            line-height: 85px;
+            margin: 0 15px;
+            box-shadow: 0 4px 15px rgba(30,60,114,0.3);
+        }
+
+        .final-score {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 45px;
+            text-align: center;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(30,60,114,0.3);
+        }
+
+        .final-score h2 {
+            font-size: 2.8em;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .final-score .score-circle {
+            width: 130px;
+            height: 130px;
+            line-height: 130px;
+            font-size: 2.2em;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .question-number {
+            color: #1e3c72;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .network-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 AZ-900 Networking Quiz</h1>
+            <p>Azure Networking Services & Concepts</p>
+        </div>
+        
+        <div class="quiz-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="score-display">
+                <span>Score: </span>
+                <span class="score-circle" id="scoreDisplay">0/0</span>
+            </div>
+            
+            <div id="quizContent">
+                <!-- Questions will be loaded here -->
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+                <button class="btn" id="restartBtn" onclick="restartQuiz()" style="display: none;">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is an Azure Virtual Network (VNet)?",
+                options: [
+                    "A physical network cable connecting datacenters",
+                    "A logically isolated section of Azure where you can launch resources",
+                    "A storage account for network configurations",
+                    "A type of virtual machine for networking"
+                ],
+                correct: 1,
+                explanation: "An Azure Virtual Network (VNet) is a logically isolated section of the Azure cloud where you can securely launch and connect Azure resources. It's similar to a traditional network in your datacenter but with additional benefits of Azure's scalable infrastructure."
+            },
+            {
+                question: "What is the purpose of a Network Security Group (NSG)?",
+                options: [
+                    "To provide DNS resolution",
+                    "To filter network traffic to and from Azure resources",
+                    "To store network configuration files",
+                    "To create virtual machines"
+                ],
+                correct: 1,
+                explanation: "A Network Security Group (NSG) acts as a basic firewall that filters network traffic to and from Azure resources in a virtual network. It contains security rules that allow or deny inbound and outbound traffic based on source/destination IP, port, and protocol."
+            },
+            {
+                question: "Which Azure service provides a fully managed DNS hosting service?",
+                options: [
+                    "Azure DNS",
+                    "Azure Traffic Manager",
+                    "Azure Load Balancer",
+                    "Azure Application Gateway"
+                ],
+                correct: 0,
+                explanation: "Azure DNS provides a fully managed DNS hosting service using Microsoft Azure infrastructure. It allows you to host your DNS domains and manage DNS records with the same credentials, APIs, tools, and billing as your other Azure services."
+            },
+            {
+                question: "What is the difference between a public and private IP address in Azure?",
+                options: [
+                    "Public IPs are faster than private IPs",
+                    "Public IPs are accessible from the internet, private IPs are only accessible within Azure networks",
+                    "Private IPs cost more than public IPs",
+                    "There is no difference between them"
+                ],
+                correct: 1,
+                explanation: "Public IP addresses are accessible from the internet and used for internet-facing resources. Private IP addresses are only accessible within Azure virtual networks and are used for internal communication between resources."
+            },
+            {
+                question: "Which Azure service distributes incoming application traffic across multiple virtual machines?",
+                options: [
+                    "Azure DNS",
+                    "Azure VPN Gateway",
+                    "Azure Load Balancer",
+                    "Azure ExpressRoute"
+                ],
+                correct: 2,
+                explanation: "Azure Load Balancer distributes incoming network traffic across multiple virtual machines or instances to ensure high availability and reliability. It operates at Layer 4 (transport layer) and can handle both inbound and outbound traffic."
+            },
+            {
+                question: "What is Azure ExpressRoute used for?",
+                options: [
+                    "Creating virtual machines quickly",
+                    "Establishing private connectivity between on-premises and Azure",
+                    "Managing DNS records",
+                    "Storing large files"
+                ],
+                correct: 1,
+                explanation: "Azure ExpressRoute creates private connections between Azure datacenters and infrastructure on-premises or in a colocation environment. These connections don't go over the public internet, offering more reliability, faster speeds, and lower latencies."
+            },
+            {
+                question: "Which service provides web application firewall capabilities?",
+                options: [
+                    "Azure DNS",
+                    "Azure Application Gateway",
+                    "Azure Virtual Network",
+                    "Azure Load Balancer"
+                ],
+                correct: 1,
+                explanation: "Azure Application Gateway is a web traffic load balancer that includes a Web Application Firewall (WAF) feature. WAF provides centralized protection for web applications from common exploits and vulnerabilities."
+            },
+            {
+                question: "What is the maximum number of virtual networks you can have per Azure subscription by default?",
+                options: [
+                    "50",
+                    "100",
+                    "1000",
+                    "10000"
+                ],
+                correct: 2,
+                explanation: "By default, you can have up to 1000 virtual networks per subscription per region. This limit can be increased by contacting Azure support if needed."
+            },
+            {
+                question: "Which Azure service provides global DNS-based traffic distribution?",
+                options: [
+                    "Azure Load Balancer",
+                    "Azure Application Gateway",
+                    "Azure Traffic Manager",
+                    "Azure VPN Gateway"
+                ],
+                correct: 2,
+                explanation: "Azure Traffic Manager is a DNS-based traffic load balancer that distributes traffic optimally to services across global Azure regions. It provides high availability and responsiveness by directing client requests to the most appropriate service endpoint."
+            },
+            {
+                question: "What is VNet Peering in Azure?",
+                options: [
+                    "Connecting two virtual networks together",
+                    "Creating a backup of a virtual network",
+                    "Monitoring network traffic",
+                    "Upgrading network performance"
+                ],
+                correct: 0,
+                explanation: "VNet Peering connects two Azure virtual networks seamlessly through the Azure backbone network. Traffic between virtual machines in peered networks is routed through Microsoft infrastructure, not the public internet, providing low latency and high bandwidth connections."
+            },
+            {
+                question: "Which protocol does Azure VPN Gateway primarily use?",
+                options: [
+                    "HTTP",
+                    "FTP",
+                    "IPSec",
+                    "SMTP"
+                ],
+                correct: 2,
+                explanation: "Azure VPN Gateway primarily uses IPSec (Internet Protocol Security) protocol to create secure, encrypted tunnels between your on-premises networks and Azure virtual networks over the public internet."
+            },
+            {
+                question: "What is Azure CDN used for?",
+                options: [
+                    "Creating virtual machines",
+                    "Caching and delivering content globally with low latency",
+                    "Managing user identities",
+                    "Storing databases"
+                ],
+                correct: 1,
+                explanation: "Azure Content Delivery Network (CDN) is a global network of servers that efficiently delivers web content to users by caching content at strategically placed physical nodes across the world, reducing latency and improving user experience."
+            },
+            {
+                question: "Which Azure service provides network-level protection against DDoS attacks?",
+                options: [
+                    "Azure Firewall",
+                    "Azure DDoS Protection",
+                    "Azure Security Center",
+                    "Azure Sentinel"
+                ],
+                correct: 1,
+                explanation: "Azure DDoS Protection provides enhanced DDoS mitigation features for applications and resources deployed in virtual networks. It combines the basic protection that's automatically enabled with additional mitigation capabilities tuned specifically to Azure Virtual Network resources."
+            },
+            {
+                question: "What is the purpose of Azure Firewall?",
+                options: [
+                    "To create virtual networks",
+                    "To provide centralized network security for Azure resources",
+                    "To store security logs",
+                    "To manage user passwords"
+                ],
+                correct: 1,
+                explanation: "Azure Firewall is a managed, cloud-based network security service that protects your Azure Virtual Network resources. It's a fully stateful firewall-as-a-service with built-in high availability and unrestricted cloud scalability."
+            },
+            {
+                question: "Which connectivity option provides the highest bandwidth between on-premises and Azure?",
+                options: [
+                    "Site-to-Site VPN",
+                    "Point-to-Site VPN",
+                    "Azure ExpressRoute",
+                    "VNet-to-VNet connection"
+                ],
+                correct: 2,
+                explanation: "Azure ExpressRoute provides the highest bandwidth option for connecting on-premises networks to Azure, offering dedicated private connections with bandwidth options ranging from 50 Mbps up to 100 Gbps, which is much higher than VPN connections."
+            },
+            {
+                question: "What is a subnet in Azure networking?",
+                options: [
+                    "A type of storage account",
+                    "A range of IP addresses within a virtual network",
+                    "A virtual machine configuration",
+                    "A DNS record type"
+                ],
+                correct: 1,
+                explanation: "A subnet is a range of IP addresses within a virtual network. Subnets enable you to segment the virtual network into one or more sub-networks and allocate a portion of the virtual network's address space to each subnet."
+            },
+            {
+                question: "Which Azure service helps optimize application performance globally?",
+                options: [
+                    "Azure Front Door",
+                    "Azure Backup",
+                    "Azure Key Vault",
+                    "Azure Monitor"
+                ],
+                correct: 0,
+                explanation: "Azure Front Door is a global, scalable entry-point that uses Microsoft's global edge network to create fast, secure, and widely scalable web applications. It provides global load balancing, SSL termination, and web application firewall capabilities."
+            },
+            {
+                question: "What is the default timeout for idle TCP connections in Azure Load Balancer?",
+                options: [
+                    "2 minutes",
+                    "4 minutes",
+                    "10 minutes",
+                    "30 minutes"
+                ],
+                correct: 1,
+                explanation: "The default idle timeout for TCP connections in Azure Load Balancer is 4 minutes. This can be configured between 4 and 30 minutes depending on your application requirements."
+            },
+            {
+                question: "Which type of VPN connection allows individual client computers to connect to Azure?",
+                options: [
+                    "Site-to-Site VPN",
+                    "Point-to-Site VPN",
+                    "VNet-to-VNet VPN",
+                    "ExpressRoute"
+                ],
+                correct: 1,
+                explanation: "Point-to-Site VPN allows individual client computers to connect securely to an Azure virtual network from a remote location, such as from home or a conference. It's useful for remote workers who need to connect to Azure VNets from varying locations."
+            },
+            {
+                question: "What is the primary difference between Azure Application Gateway and Azure Load Balancer?",
+                options: [
+                    "Application Gateway works at Layer 7 (HTTP/HTTPS), Load Balancer works at Layer 4 (TCP/UDP)",
+                    "Load Balancer is more expensive than Application Gateway",
+                    "Application Gateway only works with virtual machines",
+                    "There is no difference between them"
+                ],
+                correct: 0,
+                explanation: "Azure Application Gateway operates at Layer 7 (application layer) and can make routing decisions based on HTTP/HTTPS attributes like URL path or headers. Azure Load Balancer operates at Layer 4 (transport layer) and distributes traffic based on IP address and port information."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let answered = false;
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestion];
+            const quizContent = document.getElementById('quizContent');
+            
+            quizContent.innerHTML = `
+                <div class="question-container">
+                    <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
+                    <div class="question">${questionData.question}</div>
+                    <ul class="options">
+                        ${questionData.options.map((option, index) => `
+                            <li class="option">
+                                <label>
+                                    <input type="radio" name="answer" value="${index}">
+                                    ${option}
+                                </label>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+
+            // Reset state
+            answered = false;
+            selectedAnswer = null;
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            // Add event listeners to radio buttons
+            const radioButtons = document.querySelectorAll('input[name="answer"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    selectedAnswer = parseInt(this.value);
+                    document.getElementById('submitBtn').disabled = false;
+                });
+            });
+
+            updateProgress();
+        }
+
+        function submitAnswer() {
+            if (selectedAnswer === null || answered) return;
+
+            answered = true;
+            const questionData = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                if (index === questionData.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedAnswer && index !== questionData.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (selectedAnswer === questionData.correct) {
+                score++;
+            }
+
+            // Show explanation
+            const explanation = document.createElement('div');
+            explanation.className = 'explanation';
+            explanation.innerHTML = `
+                <h4>💡 Explanation:</h4>
+                ${questionData.explanation}
+            `;
+            document.querySelector('.question-container').appendChild(explanation);
+
+            updateScore();
+            document.getElementById('submitBtn').style.display = 'none';
+            
+            if (currentQuestion < questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `${score}/${currentQuestion + 1}`;
+        }
+
+        function showFinalScore() {
+            const percentage = Math.round((score / questions.length) * 100);
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                message = 'Outstanding! You have excellent knowledge of Azure networking concepts!';
+                emoji = '🌟';
+            } else if (percentage >= 80) {
+                message = 'Great job! You understand most networking concepts well!';
+                emoji = '🎯';
+            } else if (percentage >= 70) {
+                message = 'Good work! Review a few networking topics to strengthen your knowledge.';
+                emoji = '📚';
+            } else {
+                message = 'Keep studying! Focus on the explanations and networking fundamentals.';
+                emoji = '💪';
+            }
+
+            document.getElementById('quizContent').innerHTML = `
+                <div class="final-score">
+                    <h2>${emoji} Quiz Complete!</h2>
+                    <div class="score-circle">
+                        ${percentage}%
+                    </div>
+                    <p style="font-size: 1.3em; margin: 25px 0; font-weight: 500;">
+                        You scored ${score} out of ${questions.length} questions correctly.
+                    </p>
+                    <p style="font-size: 1.1em; opacity: 0.95; line-height: 1.5;">
+                        ${message}
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'inline-block';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            answered = false;
+            document.getElementById('restartBtn').style.display = 'none';
+            loadQuestion();
+            updateScore();
+        }
+
+        // Initialize quiz
+        loadQuestion();
+        updateScore();
+    </script>
+</body>
+</html>
