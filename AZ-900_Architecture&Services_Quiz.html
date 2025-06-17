@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ-900 Azure Architecture & Services Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .quiz-container {
+            padding: 40px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0078d4, #005a9e);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            margin-bottom: 12px;
+        }
+
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .option label:hover {
+            background: #e3f2fd;
+            border-color: #0078d4;
+            transform: translateY(-2px);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .option.correct label {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.incorrect label {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e3f2fd;
+            border-left: 4px solid #0078d4;
+            border-radius: 5px;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .explanation h4 {
+            color: #0078d4;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,120,212,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,120,212,0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3em;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .score-circle {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            line-height: 80px;
+            margin: 0 15px;
+        }
+
+        .final-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .final-score h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .question-number {
+            color: #0078d4;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AZ-900 Quiz</h1>
+            <p>Azure Architecture & Services</p>
+        </div>
+        
+        <div class="quiz-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="score-display">
+                <span>Score: </span>
+                <span class="score-circle" id="scoreDisplay">0/0</span>
+            </div>
+            
+            <div id="quizContent">
+                <!-- Questions will be loaded here -->
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+                <button class="btn" id="restartBtn" onclick="restartQuiz()" style="display: none;">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is an Azure Region?",
+                options: [
+                    "A set of datacenters deployed within a latency-defined perimeter",
+                    "A single datacenter building",
+                    "A virtual network segment",
+                    "A resource group container"
+                ],
+                correct: 0,
+                explanation: "An Azure Region is a set of datacenters deployed within a latency-defined perimeter and connected through a dedicated regional low-latency network. This provides local data residency, compliance, and resiliency options."
+            },
+            {
+                question: "Which Azure service provides Infrastructure as a Service (IaaS)?",
+                options: [
+                    "Azure Functions",
+                    "Azure App Service",
+                    "Azure Virtual Machines",
+                    "Azure SQL Database"
+                ],
+                correct: 2,
+                explanation: "Azure Virtual Machines provide Infrastructure as a Service (IaaS), giving you complete control over the operating system and applications. You manage the VM while Microsoft manages the underlying infrastructure."
+            },
+            {
+                question: "What is the purpose of Azure Availability Zones?",
+                options: [
+                    "To provide backup storage",
+                    "To ensure high availability within a region",
+                    "To connect different regions",
+                    "To manage user access"
+                ],
+                correct: 1,
+                explanation: "Azure Availability Zones are physically separate datacenters within an Azure region. They provide high availability and fault tolerance by distributing resources across multiple locations within the same region."
+            },
+            {
+                question: "Which of the following is a Platform as a Service (PaaS) offering?",
+                options: [
+                    "Azure Virtual Machines",
+                    "Azure Storage Account",
+                    "Azure App Service",
+                    "Azure Virtual Network"
+                ],
+                correct: 2,
+                explanation: "Azure App Service is a Platform as a Service (PaaS) offering that allows you to build and host web apps, mobile backends, and RESTful APIs without managing the underlying infrastructure."
+            },
+            {
+                question: "What is the smallest organizational unit in Azure?",
+                options: [
+                    "Subscription",
+                    "Resource Group",
+                    "Management Group",
+                    "Resource"
+                ],
+                correct: 3,
+                explanation: "A Resource is the smallest organizational unit in Azure. Resources are instances of services you create, such as virtual machines, storage accounts, or databases."
+            },
+            {
+                question: "Which Azure service provides object storage?",
+                options: [
+                    "Azure Files",
+                    "Azure Disk Storage",
+                    "Azure Blob Storage",
+                    "Azure Table Storage"
+                ],
+                correct: 2,
+                explanation: "Azure Blob Storage is Microsoft's object storage solution for the cloud, optimized for storing massive amounts of unstructured data such as text, binary data, documents, media files, and application installers."
+            },
+            {
+                question: "What is the primary purpose of Azure Resource Groups?",
+                options: [
+                    "To organize and manage related Azure resources",
+                    "To provide network connectivity",
+                    "To store application data",
+                    "To manage user permissions only"
+                ],
+                correct: 0,
+                explanation: "Azure Resource Groups are logical containers that hold related resources for an Azure solution. They help organize, manage, and control access to resources as a group."
+            },
+            {
+                question: "Which service provides serverless computing in Azure?",
+                options: [
+                    "Azure Virtual Machines",
+                    "Azure Container Instances",
+                    "Azure Functions",
+                    "Azure App Service"
+                ],
+                correct: 2,
+                explanation: "Azure Functions provides serverless computing, allowing you to run event-driven code without managing infrastructure. You only pay for the compute time consumed when your functions are executing."
+            },
+            {
+                question: "What is Azure Active Directory primarily used for?",
+                options: [
+                    "File storage",
+                    "Identity and access management",
+                    "Virtual machine deployment",
+                    "Network routing"
+                ],
+                correct: 1,
+                explanation: "Azure Active Directory (Azure AD) is Microsoft's cloud-based identity and access management service, helping employees access external resources and manage user identities."
+            },
+            {
+                question: "Which Azure service is best for hosting relational databases?",
+                options: [
+                    "Azure Cosmos DB",
+                    "Azure Blob Storage",
+                    "Azure SQL Database",
+                    "Azure Table Storage"
+                ],
+                correct: 2,
+                explanation: "Azure SQL Database is a fully managed Platform as a Service (PaaS) database engine that's ideal for hosting relational databases in the cloud with built-in intelligence and security."
+            },
+            {
+                question: "What does SLA stand for in Azure context?",
+                options: [
+                    "Service Level Agreement",
+                    "Secure Login Authentication",
+                    "Storage Limit Allocation",
+                    "System Load Analyzer"
+                ],
+                correct: 0,
+                explanation: "SLA stands for Service Level Agreement. It defines the level of service availability and performance that Microsoft commits to provide for Azure services, typically expressed as uptime percentages."
+            },
+            {
+                question: "Which tool is used for command-line management of Azure resources?",
+                options: [
+                    "PowerShell only",
+                    "Azure CLI",
+                    "Visual Studio Code",
+                    "Azure Storage Explorer"
+                ],
+                correct: 1,
+                explanation: "Azure CLI (Command Line Interface) is a cross-platform command-line tool that provides a set of commands used to create and manage Azure resources from the command line."
+            },
+            {
+                question: "What is the maximum number of virtual machines you can deploy in an Availability Set?",
+                options: [
+                    "99",
+                    "100",
+                    "200",
+                    "1000"
+                ],
+                correct: 0,
+                explanation: "An Azure Availability Set can contain up to 99 virtual machines. Availability Sets help ensure your application remains available during planned maintenance or hardware failures."
+            },
+            {
+                question: "Which Azure service provides distributed NoSQL database capabilities?",
+                options: [
+                    "Azure SQL Database",
+                    "Azure Database for MySQL",
+                    "Azure Cosmos DB",
+                    "Azure Synapse Analytics"
+                ],
+                correct: 2,
+                explanation: "Azure Cosmos DB is Microsoft's globally distributed, multi-model NoSQL database service that provides turnkey global distribution, elastic scaling, and multiple consistency models."
+            },
+            {
+                question: "What is the purpose of Azure Load Balancer?",
+                options: [
+                    "To store large amounts of data",
+                    "To distribute incoming traffic across multiple resources",
+                    "To manage user identities",
+                    "To monitor system performance"
+                ],
+                correct: 1,
+                explanation: "Azure Load Balancer distributes incoming network traffic across multiple virtual machines or services to ensure high availability and improve application performance by preventing any single resource from being overwhelmed."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let answered = false;
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestion];
+            const quizContent = document.getElementById('quizContent');
+            
+            quizContent.innerHTML = `
+                <div class="question-container">
+                    <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
+                    <div class="question">${questionData.question}</div>
+                    <ul class="options">
+                        ${questionData.options.map((option, index) => `
+                            <li class="option">
+                                <label>
+                                    <input type="radio" name="answer" value="${index}">
+                                    ${option}
+                                </label>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+
+            // Reset state
+            answered = false;
+            selectedAnswer = null;
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            // Add event listeners to radio buttons
+            const radioButtons = document.querySelectorAll('input[name="answer"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    selectedAnswer = parseInt(this.value);
+                    document.getElementById('submitBtn').disabled = false;
+                });
+            });
+
+            updateProgress();
+        }
+
+        function submitAnswer() {
+            if (selectedAnswer === null || answered) return;
+
+            answered = true;
+            const questionData = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                if (index === questionData.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedAnswer && index !== questionData.correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            if (selectedAnswer === questionData.correct) {
+                score++;
+            }
+
+            // Show explanation
+            const explanation = document.createElement('div');
+            explanation.className = 'explanation';
+            explanation.innerHTML = `
+                <h4>Explanation:</h4>
+                ${questionData.explanation}
+            `;
+            document.querySelector('.question-container').appendChild(explanation);
+
+            updateScore();
+            document.getElementById('submitBtn').style.display = 'none';
+            
+            if (currentQuestion < questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `${score}/${currentQuestion + 1}`;
+        }
+
+        function showFinalScore() {
+            const percentage = Math.round((score / questions.length) * 100);
+            let message = '';
+            
+            if (percentage >= 90) {
+                message = 'Excellent! You\'re well prepared for the AZ-900 exam!';
+            } else if (percentage >= 80) {
+                message = 'Great job! Review a few topics and you\'ll be ready!';
+            } else if (percentage >= 70) {
+                message = 'Good effort! Some more study time will help boost your confidence.';
+            } else {
+                message = 'Keep studying! Focus on the explanations and try again.';
+            }
+
+            document.getElementById('quizContent').innerHTML = `
+                <div class="final-score">
+                    <h2>Quiz Complete!</h2>
+                    <div class="score-circle" style="width: 120px; height: 120px; line-height: 120px; font-size: 2em;">
+                        ${percentage}%
+                    </div>
+                    <p style="font-size: 1.2em; margin: 20px 0;">
+                        You scored ${score} out of ${questions.length} questions correctly.
+                    </p>
+                    <p style="font-size: 1.1em; opacity: 0.9;">
+                        ${message}
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'inline-block';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
+            answered = false;
+            document.getElementById('restartBtn').style.display = 'none';
+            loadQuestion();
+            updateScore();
+        }
+
+        // Initialize quiz
+        loadQuestion();
+        updateScore();
+    </script>
+</body>
+</html>
