@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ-900 Comprehensive Exam Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0078d4 0%, #106ebe 50%, #005a9e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>') repeat;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-container {
+            padding: 40px;
+        }
+
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border: 2px solid #dee2e6;
+        }
+
+        .question-counter {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #0078d4;
+        }
+
+        .domain-indicator {
+            background: #0078d4;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 2px 4px rgba(102,126,234,0.4);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .question-container {
+            margin-bottom: 40px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .question-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .question {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .question-type {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .question-content {
+            padding: 30px;
+        }
+
+        /* Multiple Choice Styles */
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            margin-bottom: 15px;
+        }
+
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            background: #ffffff;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .option label:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #0078d4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,120,212,0.2);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 18px;
+            transform: scale(1.4);
+            accent-color: #0078d4;
+        }
+
+        .option.correct label {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.incorrect label {
+            background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%);
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        /* Fill in the Blank Styles */
+        .fill-blank-container {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .blank-sentence {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .blank-dropdown {
+            display: inline-block;
+            background: #fff;
+            border: 2px solid #0078d4;
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin: 0 5px;
+            font-size: 1em;
+            font-weight: 600;
+            min-width: 150px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,120,212,0.2);
+        }
+
+        .blank-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .blank-option {
+            background: #e3f2fd;
+            border: 2px solid #bbdefb;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .blank-option:hover {
+            background: #0078d4;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,120,212,0.3);
+        }
+
+        .blank-option.selected {
+            background: #0078d4;
+            color: white;
+            border-color: #005a9e;
+        }
+
+        /* Drag and Drop Styles */
+        .drag-drop-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .drag-items {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+
+        .drag-items h4 {
+            margin-bottom: 20px;
+            color: #0078d4;
+            font-size: 1.2em;
+        }
+
+        .drag-item {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid #0078d4;
+            padding: 15px 20px;
+            margin: 12px 0;
+            border-radius: 10px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,120,212,0.2);
+        }
+
+        .drag-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,120,212,0.3);
+        }
+
+        .drag-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+            cursor: grabbing;
+        }
+
+        .drop-zones {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+
+        .drop-zones h4 {
+            margin-bottom: 20px;
+            color: #0078d4;
+            font-size: 1.2em;
+        }
+
+        .drop-zone {
+            background: white;
+            border: 3px dashed #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            min-height: 60px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #0078d4;
+            background: #e3f2fd;
+            transform: scale(1.02);
+        }
+
+        .drop-zone.filled {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .drop-zone.correct {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+
+        .drop-zone.incorrect {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%);
+        }
+
+        /* Buttons */
+        .buttons {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.2em;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,120,212,0.3);
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,120,212,0.4);
+        }
+
+        .btn:disabled {
+            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(108,117,125,0.4);
+        }
+
+        /* Explanation */
+        .explanation {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%);
+            border-left: 5px solid #0078d4;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation h4 {
+            color: #0078d4;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .explanation p {
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: center;
+            font-size: 1.4em;
+            margin: 25px 0;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .score-circle {
+            display: inline-block;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+            font-size: 1.4em;
+            font-weight: bold;
+            line-height: 90px;
+            margin: 0 20px;
+            box-shadow: 0 5px 20px rgba(0,120,212,0.3);
+        }
+
+        /* Final Results */
+        .final-results {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 15px 40px rgba(102,126,234,0.3);
+        }
+
+        .final-results h2 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .result-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .result-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .result-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .quiz-container {
+                padding: 20px;
+            }
+
+            .drag-drop-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .quiz-navigation {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .buttons {
+                margin-top: 25px;
+            }
+
+            .btn {
+                margin: 10px 5px;
+                padding: 15px 25px;
+                font-size: 1em;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 AZ-900 Exam Simulator</h1>
+            <p>Comprehensive 100-Question Practice Test</p>
+        </div>
+        
+        <div class="quiz-container">
+            <div class="quiz-navigation">
+                <div class="question-counter" id="questionCounter">Question 1 of 100</div>
+                <div class="domain-indicator" id="domainIndicator">Cloud Concepts</div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0% Complete</div>
+            </div>
+            
+            <div class="score-display">
+                <span>Score: </span>
+                <span class="score-circle" id="scoreDisplay">0/0</span>
+            </div>
+            
+            <div id="quizContent">
+                <!-- Questions will be loaded here -->
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" style="display: none;">Previous</button>
+                <button class="btn" id="restartBtn" onclick="restartQuiz()" style="display: none;">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Cloud Concepts (25 questions)
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What are the three main cloud service models?",
+                options: [
+                    "IaaS, PaaS, and SaaS",
+                    "Public, Private, and Hybrid",
+                    "Storage, Compute, and Networking",
+                    "Basic, Standard, and Premium"
+                ],
+                correct: 0,
+                explanation: "The three main cloud service models are Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and Software as a Service (SaaS). These represent different levels of abstraction and management responsibility."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "fill_blank",
+                question: "_____ cloud deployment combines both public and private clouds, allowing data and applications to be shared between them.",
+                blanks: ["Hybrid"],
+                options: ["Public", "Private", "Hybrid", "Community"],
+                correct: [2],
+                explanation: "Hybrid cloud deployment model combines public and private clouds, allowing organizations to keep sensitive data in private clouds while leveraging public cloud resources for less critical operations."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "Which of the following is NOT a benefit of cloud computing?",
+                options: [
+                    "Scalability",
+                    "Cost optimization",
+                    "Increased physical control over hardware",
+                    "Global reach"
+                ],
+                correct: 2,
+                explanation: "Increased physical control over hardware is NOT a benefit of cloud computing. In fact, cloud computing reduces the need for physical hardware management, which is handled by the cloud provider."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "drag_drop",
+                question: "Match the cloud service models with their descriptions:",
+                dragItems: ["IaaS", "PaaS", "SaaS"],
+                dropZones: [
+                    "Provides virtualized computing resources over the internet",
+                    "Provides a platform for developers to build applications",
+                    "Provides complete software applications over the internet"
+                ],
+                correct: [0, 1, 2],
+                explanation: "IaaS provides virtualized computing resources, PaaS provides development platforms, and SaaS provides complete software applications as services."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What is the primary advantage of cloud computing's pay-as-you-go pricing model?",
+                options: [
+                    "Fixed monthly costs",
+                    "No upfront capital investment",
+                    "Guaranteed performance",
+                    "Unlimited storage"
+                ],
+                correct: 1,
+                explanation: "The pay-as-you-go model's primary advantage is eliminating upfront capital investment. You only pay for the resources you actually use, converting capital expenses to operational expenses."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "fill_blank",
+                question: "The ability to increase or decrease resources based on demand is called _____.",
+                blanks: ["Elasticity"],
+                options: ["Availability", "Elasticity", "Durability", "Consistency"],
+                correct: [1],
+                explanation: "Elasticity is the ability to automatically scale resources up or down based on current demand, ensuring optimal performance while controlling costs."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "Which cloud deployment model offers the highest level of control and customization?",
+                options: [
+                    "Public cloud",
+                    "Private cloud",
+                    "Hybrid cloud",
+                    "Community cloud"
+                ],
+                correct: 1,
+                explanation: "Private cloud offers the highest level of control and customization because the infrastructure is dedicated to a single organization and can be tailored to specific requirements."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What does 'fault tolerance' mean in cloud computing?",
+                options: [
+                    "The ability to prevent all failures",
+                    "The ability to continue operating despite component failures",
+                    "The ability to reduce costs",
+                    "The ability to increase performance"
+                ],
+                correct: 1,
+                explanation: "Fault tolerance is the ability of a system to continue operating properly in the event of component failures, ensuring high availability and reliability."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "drag_drop",
+                question: "Match the characteristics with the appropriate cloud deployment models:",
+                dragItems: ["Lowest cost", "Highest security", "Best of both worlds"],
+                dropZones: [
+                    "Public Cloud",
+                    "Private Cloud", 
+                    "Hybrid Cloud"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Public cloud typically offers the lowest cost due to shared resources, private cloud provides the highest security with dedicated infrastructure, and hybrid cloud offers the best of both worlds."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "Which of the following best describes 'economies of scale' in cloud computing?",
+                options: [
+                    "Smaller companies get better pricing",
+                    "Cloud providers achieve cost savings through large-scale operations",
+                    "Individual customers can negotiate prices",
+                    "Prices increase with usage"
+                ],
+                correct: 1,
+                explanation: "Economies of scale in cloud computing refer to cost savings that cloud providers achieve by operating at large scale, which they can pass on to customers in the form of lower prices."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "fill_blank",
+                question: "_____ refers to the ability of a system to remain operational over time, typically measured as a percentage.",
+                blanks: ["Availability"],
+                options: ["Reliability", "Availability", "Scalability", "Performance"],
+                correct: [1],
+                explanation: "Availability refers to the uptime of a system, typically expressed as a percentage (like 99.9%), indicating how much of the time the system is operational and accessible."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What is the main difference between horizontal and vertical scaling?",
+                options: [
+                    "Horizontal adds more power, vertical adds more instances",
+                    "Horizontal adds more instances, vertical adds more power",
+                    "There is no difference",
+                    "Horizontal is cheaper than vertical"
+                ],
+                correct: 1,
+                explanation: "Horizontal scaling (scale out) adds more instances or servers, while vertical scaling (scale up) adds more power (CPU, RAM) to existing instances."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "Which of the following is a characteristic of cloud computing?",
+                options: [
+                    "Limited scalability",
+                    "High upfront costs",
+                    "On-demand self-service",
+                    "Single-tenant architecture"
+                ],
+                correct: 2,
+                explanation: "On-demand self-service is a key characteristic of cloud computing, allowing users to provision and manage resources automatically without human intervention from the service provider."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "fill_blank",
+                question: "The cloud characteristic that allows multiple customers to share the same physical resources is called _____.",
+                blanks: ["Multi-tenancy"],
+                options: ["Virtualization", "Multi-tenancy", "Elasticity", "Redundancy"],
+                correct: [1],
+                explanation: "Multi-tenancy is the cloud characteristic that enables multiple customers (tenants) to share the same physical infrastructure while maintaining logical separation of their data and applications."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What is the primary benefit of using cloud services for disaster recovery?",
+                options: [
+                    "Faster internet speeds",
+                    "Lower costs and geographic distribution",
+                    "Better user interfaces",
+                    "Guaranteed zero downtime"
+                ],
+                correct: 1,
+                explanation: "Cloud services provide cost-effective disaster recovery through geographic distribution of data centers, eliminating the need for organizations to maintain expensive secondary sites."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "drag_drop",
+                question: "Match the cloud benefits with their descriptions:",
+                dragItems: ["High Availability", "Fault Tolerance", "Disaster Recovery"],
+                dropZones: [
+                    "System remains operational most of the time",
+                    "System continues working despite component failures",
+                    "System can recover from major outages or disasters"
+                ],
+                correct: [0, 1, 2],
+                explanation: "High availability ensures systems are operational most of the time, fault tolerance allows continued operation despite failures, and disaster recovery enables recovery from major incidents."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What does CapEx stand for and how does it relate to cloud computing?",
+                options: [
+                    "Capital Expenditure - reduced in cloud computing",
+                    "Capacity Expansion - increased in cloud computing",
+                    "Capital Expertise - required for cloud computing",
+                    "Capacity Excellence - achieved through cloud computing"
+                ],
+                correct: 0,
+                explanation: "CapEx (Capital Expenditure) represents upfront investments in physical infrastructure. Cloud computing reduces CapEx by converting these costs to OpEx (Operational Expenditure)."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "fill_blank",
+                question: "_____ is the practice of using multiple cloud providers to avoid dependency on a single vendor.",
+                blanks: ["Multi-cloud"],
+                options: ["Hybrid-cloud", "Multi-cloud", "Private-cloud", "Edge-cloud"],
+                correct: [1],
+                explanation: "Multi-cloud strategy involves using services from multiple cloud providers to avoid vendor lock-in, increase redundancy, and potentially optimize costs and performance."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "Which of the following best describes 'agility' in cloud computing?",
+                options: [
+                    "How fast the servers run",
+                    "How quickly you can provision and deploy resources",
+                    "How many resources you can use",
+                    "How secure the cloud is"
+                ],
+                correct: 1,
+                explanation: "Agility in cloud computing refers to the ability to quickly provision, deploy, and scale resources to meet changing business requirements, enabling faster time-to-market."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What is meant by 'global reach' in cloud computing?",
+                options: [
+                    "Cloud services work on all devices",
+                    "Cloud providers have data centers worldwide",
+                    "Cloud services support all programming languages",
+                    "Cloud services work with all operating systems"
+                ],
+                correct: 1,
+                explanation: "Global reach refers to cloud providers having data centers distributed worldwide, allowing organizations to deploy applications closer to their users for better performance and compliance."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "fill_blank",
+                question: "The process of moving applications and data from on-premises to the cloud is called _____.",
+                blanks: ["Migration"],
+                options: ["Transformation", "Migration", "Integration", "Virtualization"],
+                correct: [1],
+                explanation: "Cloud migration is the process of moving applications, data, and other business elements from on-premises infrastructure to the cloud environment."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "Which consumption-based model is most common in cloud computing?",
+                options: [
+                    "Pay-per-user",
+                    "Pay-as-you-go",
+                    "Pay-per-month",
+                    "Pay-per-application"
+                ],
+                correct: 1,
+                explanation: "Pay-as-you-go is the most common consumption-based model in cloud computing, where customers pay only for the resources they actually consume."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "drag_drop",
+                question: "Match the responsibility models with the service types:",
+                dragItems: ["Customer manages most", "Shared responsibility", "Provider manages most"],
+                dropZones: ["IaaS", "PaaS", "SaaS"],
+                correct: [0, 1, 2],
+                explanation: "In IaaS, customers manage most components including OS and applications. PaaS involves shared responsibility. In SaaS, the provider manages most components."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "multiple_choice",
+                question: "What is the primary purpose of resource pooling in cloud computing?",
+                options: [
+                    "To increase security",
+                    "To efficiently share resources among multiple customers",
+                    "To reduce internet latency",
+                    "To improve user interfaces"
+                ],
+                correct: 1,
+                explanation: "Resource pooling allows cloud providers to efficiently share physical resources among multiple customers, maximizing utilization and reducing costs for everyone."
+            },
+            {
+                domain: "Cloud Concepts",
+                type: "fill_blank",
+                question: "_____ computing brings computation and data storage closer to the location where it is needed to improve response times.",
+                blanks: ["Edge"],
+                options: ["Fog", "Edge", "Grid", "Distributed"],
+                correct: [1],
+                explanation: "Edge computing brings computation and data storage closer to end users and devices to reduce latency and improve response times for applications."
+            },
+
+            // Azure Services (35 questions)
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service provides Infrastructure as a Service (IaaS)?",
+                options: [
+                    "Azure Functions",
+                    "Azure App Service",
+                    "Azure Virtual Machines",
+                    "Azure SQL Database"
+                ],
+                correct: 2,
+                explanation: "Azure Virtual Machines provide Infrastructure as a Service (IaaS), giving you complete control over the operating system and applications while Microsoft manages the underlying infrastructure."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ is a Platform as a Service offering for hosting web applications without managing the underlying infrastructure.",
+                blanks: ["App Service"],
+                options: ["Virtual Machines", "App Service", "Functions", "Container Registry"],
+                correct: [1],
+                explanation: "Azure App Service is a PaaS offering that allows you to build and host web apps, mobile backends, and RESTful APIs without managing the underlying infrastructure."
+            },
+            {
+                domain: "Azure Services",
+                type: "drag_drop",
+                question: "Match the Azure compute services with their primary use cases:",
+                dragItems: ["Virtual Machines", "App Service", "Functions"],
+                dropZones: [
+                    "Full control over OS and applications",
+                    "Web applications and APIs",
+                    "Serverless event-driven code"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Virtual Machines provide full OS control, App Service is ideal for web applications, and Functions offer serverless computing for event-driven scenarios."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is the maximum number of virtual machines you can deploy in an Availability Set?",
+                options: [
+                    "99",
+                    "100",
+                    "200",
+                    "1000"
+                ],
+                correct: 0,
+                explanation: "An Azure Availability Set can contain up to 99 virtual machines. Availability Sets help ensure your application remains available during planned maintenance or hardware failures."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ Storage is Microsoft's object storage solution optimized for storing massive amounts of unstructured data.",
+                blanks: ["Blob"],
+                options: ["File", "Blob", "Table", "Queue"],
+                correct: [1],
+                explanation: "Azure Blob Storage is optimized for storing massive amounts of unstructured data such as text, binary data, documents, media files, and application installers."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service provides a fully managed relational database?",
+                options: [
+                    "Azure Cosmos DB",
+                    "Azure Blob Storage",
+                    "Azure SQL Database",
+                    "Azure Table Storage"
+                ],
+                correct: 2,
+                explanation: "Azure SQL Database is a fully managed Platform as a Service (PaaS) database engine that handles most database management functions automatically."
+            },
+            {
+                domain: "Azure Services",
+                type: "drag_drop",
+                question: "Match the Azure storage types with their use cases:",
+                dragItems: ["Blob Storage", "File Storage", "Table Storage"],
+                dropZones: [
+                    "Unstructured data like documents and media",
+                    "Shared file systems accessible via SMB",
+                    "NoSQL key-value data store"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Blob Storage handles unstructured data, File Storage provides SMB file shares, and Table Storage offers NoSQL key-value storage."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is Azure Resource Manager (ARM)?",
+                options: [
+                    "A monitoring service",
+                    "The deployment and management service for Azure",
+                    "A storage service",
+                    "A networking service"
+                ],
+                correct: 1,
+                explanation: "Azure Resource Manager (ARM) is the deployment and management service for Azure that provides a consistent management layer for creating, updating, and deleting resources."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ Groups are logical containers that hold related resources for an Azure solution.",
+                blanks: ["Resource"],
+                options: ["Security", "Resource", "Management", "Service"],
+                correct: [1],
+                explanation: "Resource Groups are logical containers that hold related resources for an Azure solution, enabling you to manage and organize resources as a group."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service provides serverless computing?",
+                options: [
+                    "Azure Virtual Machines",
+                    "Azure Container Instances",
+                    "Azure Functions",
+                    "Azure Kubernetes Service"
+                ],
+                correct: 2,
+                explanation: "Azure Functions provides serverless computing, allowing you to run event-driven code without managing infrastructure. You only pay for the compute time consumed."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is Azure Cosmos DB?",
+                options: [
+                    "A relational database service",
+                    "A globally distributed multi-model NoSQL database",
+                    "A file storage service",
+                    "A virtual machine service"
+                ],
+                correct: 1,
+                explanation: "Azure Cosmos DB is Microsoft's globally distributed, multi-model NoSQL database service that provides turnkey global distribution and elastic scaling."
+            },
+            {
+                domain: "Azure Services",
+                type: "drag_drop",
+                question: "Match the Azure database services with their characteristics:",
+                dragItems: ["Azure SQL Database", "Azure Cosmos DB", "Azure Database for MySQL"],
+                dropZones: [
+                    "Managed relational database with SQL compatibility",
+                    "Globally distributed NoSQL database",
+                    "Managed MySQL database service"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Azure SQL Database provides managed SQL Server capabilities, Cosmos DB offers global NoSQL, and Azure Database for MySQL provides managed MySQL hosting."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ Service (AKS) is a managed Kubernetes service that simplifies container orchestration.",
+                blanks: ["Kubernetes"],
+                options: ["Container", "Kubernetes", "Docker", "Service"],
+                correct: [1],
+                explanation: "Azure Kubernetes Service (AKS) is a managed Kubernetes service that simplifies deploying, managing, and scaling containerized applications using Kubernetes."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service is used for big data analytics?",
+                options: [
+                    "Azure SQL Database",
+                    "Azure Synapse Analytics",
+                    "Azure Cosmos DB",
+                    "Azure Table Storage"
+                ],
+                correct: 1,
+                explanation: "Azure Synapse Analytics (formerly SQL Data Warehouse) is an analytics service that brings together data integration, data warehousing, and big data analytics."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is Azure Logic Apps used for?",
+                options: [
+                    "Virtual machine management",
+                    "Workflow automation and integration",
+                    "Database administration",
+                    "Network monitoring"
+                ],
+                correct: 1,
+                explanation: "Azure Logic Apps is a cloud service that helps you schedule, automate, and orchestrate tasks, business processes, and workflows when you need to integrate apps, data, systems, and services."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ provides a set of machine learning tools and services for building, training, and deploying models.",
+                blanks: ["Machine Learning"],
+                options: ["AI", "Machine Learning", "Cognitive Services", "Bot Service"],
+                correct: [1],
+                explanation: "Azure Machine Learning is a cloud-based environment you can use to train, deploy, automate, manage, and track ML models."
+            },
+            {
+                domain: "Azure Services",
+                type: "drag_drop",
+                question: "Match the Azure AI services with their capabilities:",
+                dragItems: ["Cognitive Services", "Bot Service", "Machine Learning"],
+                dropZones: [
+                    "Pre-built AI models for vision, speech, language",
+                    "Conversational AI platform",
+                    "Custom ML model development platform"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Cognitive Services provide pre-built AI APIs, Bot Service enables chatbot development, and Machine Learning supports custom model creation."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service provides Identity and Access Management?",
+                options: [
+                    "Azure Key Vault",
+                    "Azure Active Directory",
+                    "Azure Security Center",
+                    "Azure Monitor"
+                ],
+                correct: 1,
+                explanation: "Azure Active Directory (Azure AD) is Microsoft's cloud-based identity and access management service that helps employees access external resources and manage identities."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ is a fully managed backup service that provides simple, secure, and cost-effective solutions.",
+                blanks: ["Backup"],
+                options: ["Archive", "Backup", "Recovery", "Vault"],
+                correct: [1],
+                explanation: "Azure Backup is a fully managed backup service that provides simple, secure, and cost-effective solutions to back up your data and recover it from the Microsoft Azure cloud."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is Azure DevOps used for?",
+                options: [
+                    "Database management",
+                    "Development collaboration and CI/CD",
+                    "Virtual machine deployment",
+                    "Network configuration"
+                ],
+                correct: 1,
+                explanation: "Azure DevOps provides development collaboration tools including version control, reporting, requirements management, project management, automated builds, testing, and release management."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service helps monitor application performance and availability?",
+                options: [
+                    "Azure Security Center",
+                    "Azure Monitor",
+                    "Azure Advisor",
+                    "Azure Policy"
+                ],
+                correct: 1,
+                explanation: "Azure Monitor maximizes the availability and performance of applications and services by delivering a comprehensive solution for collecting, analyzing, and acting on telemetry from cloud and on-premises environments."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ Vault is a service for securely storing and accessing secrets like passwords, certificates, and API keys.",
+                blanks: ["Key"],
+                options: ["Secret", "Key", "Secure", "Password"],
+                correct: [1],
+                explanation: "Azure Key Vault is a cloud service for securely storing and accessing secrets, keys, and certificates, helping safeguard cryptographic keys and secrets used by cloud applications and services."
+            },
+            {
+                domain: "Azure Services",
+                type: "drag_drop",
+                question: "Match the Azure management tools with their purposes:",
+                dragItems: ["Azure Portal", "Azure CLI", "Azure PowerShell"],
+                dropZones: [
+                    "Web-based unified console",
+                    "Cross-platform command-line interface",
+                    "Windows PowerShell module"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Azure Portal provides a web GUI, Azure CLI offers cross-platform command-line access, and Azure PowerShell provides Windows PowerShell cmdlets for Azure management."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is Azure Site Recovery used for?",
+                options: [
+                    "Website hosting",
+                    "Disaster recovery and business continuity",
+                    "Domain registration",
+                    "SSL certificate management"
+                ],
+                correct: 1,
+                explanation: "Azure Site Recovery helps ensure business continuity by keeping business apps and workloads running during outages. It replicates workloads running on physical and virtual machines from a primary site to a secondary location."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ is a search-as-a-service solution that gives developers APIs and tools for adding rich search capabilities.",
+                blanks: ["Cognitive Search"],
+                options: ["Search", "Cognitive Search", "Query", "Index"],
+                correct: [1],
+                explanation: "Azure Cognitive Search (formerly Azure Search) is a search-as-a-service cloud solution that gives developers APIs and tools for adding a rich search experience over private, heterogeneous content in web, mobile, and enterprise applications."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service provides content delivery network capabilities?",
+                options: [
+                    "Azure Front Door",
+                    "Azure CDN",
+                    "Azure Traffic Manager",
+                    "Azure Load Balancer"
+                ],
+                correct: 1,
+                explanation: "Azure CDN (Content Delivery Network) is a global CDN solution for delivering high-bandwidth content by caching content at strategically placed physical nodes across the world."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is Azure Event Grid?",
+                options: [
+                    "A virtual network service",
+                    "An event routing service",
+                    "A storage service",
+                    "A compute service"
+                ],
+                correct: 1,
+                explanation: "Azure Event Grid is a fully managed event routing service that uses a publish-subscribe model for uniform event consumption, enabling reactive programming and event-driven architectures."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ Hub is a messaging service that enables communication between applications and devices in IoT solutions.",
+                blanks: ["IoT"],
+                options: ["Event", "IoT", "Service", "Notification"],
+                correct: [1],
+                explanation: "Azure IoT Hub is a managed service hosted in the cloud that acts as a central message hub for bidirectional communication between IoT applications and connected devices."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service provides workflow orchestration for data processing?",
+                options: [
+                    "Azure Data Factory",
+                    "Azure SQL Database",
+                    "Azure Cosmos DB",
+                    "Azure Storage"
+                ],
+                correct: 0,
+                explanation: "Azure Data Factory is a cloud-based data integration service that allows you to create data-driven workflows for orchestrating and automating data movement and data transformation."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "What is Azure Stream Analytics used for?",
+                options: [
+                    "Batch data processing",
+                    "Real-time data stream processing",
+                    "Data storage",
+                    "Data visualization"
+                ],
+                correct: 1,
+                explanation: "Azure Stream Analytics is a real-time analytics service designed to analyze and process fast moving streams of data that can be used to trigger alerts, feed information to reporting tools, or store transformed data."
+            },
+            {
+                domain: "Azure Services",
+                type: "drag_drop",
+                question: "Match the Azure services with their primary categories:",
+                dragItems: ["Virtual Machines", "SQL Database", "Virtual Network"],
+                dropZones: ["Compute", "Database", "Networking"],
+                correct: [0, 1, 2],
+                explanation: "Virtual Machines are compute services, SQL Database is a database service, and Virtual Network is a networking service in Azure's service categorization."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ provides recommendations to help you optimize your Azure deployments for high availability, security, performance, and cost.",
+                blanks: ["Advisor"],
+                options: ["Monitor", "Advisor", "Security Center", "Policy"],
+                correct: [1],
+                explanation: "Azure Advisor is a personalized cloud consultant that helps you follow best practices to optimize your Azure deployments by analyzing your configurations and usage telemetry."
+            },
+            {
+                domain: "Azure Services",
+                type: "multiple_choice",
+                question: "Which Azure service helps you implement governance and compliance across your Azure resources?",
+                options: [
+                    "Azure Monitor",
+                    "Azure Policy",
+                    "Azure Backup",
+                    "Azure Site Recovery"
+                ],
+                correct: 1,
+                explanation: "Azure Policy helps you implement governance for your resources by creating, assigning, and managing policies that enforce rules and effects over your resources to ensure they stay compliant with corporate standards."
+            },
+            {
+                domain: "Azure Services",
+                type: "fill_blank",
+                question: "Azure _____ Templates are JSON files that define the infrastructure and configuration for your Azure deployment.",
+                blanks: ["Resource Manager"],
+                options: ["Deployment", "Resource Manager", "Configuration", "Infrastructure"],
+                correct: [1],
+                explanation: "Azure Resource Manager (ARM) Templates are JSON files that define the infrastructure and configuration for your project, enabling infrastructure as code and consistent deployments."
+            },
+
+            // Networking (20 questions)
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "What is an Azure Virtual Network (VNet)?",
+                options: [
+                    "A physical network cable",
+                    "A logically isolated section of Azure where you can launch resources",
+                    "A type of storage account",
+                    "A virtual machine configuration"
+                ],
+                correct: 1,
+                explanation: "An Azure Virtual Network (VNet) is a logically isolated section of the Azure cloud where you can securely launch and connect Azure resources. It's the fundamental building block for your private network in Azure."
+            },
+            {
+                domain: "Azure Networking",
+                type: "fill_blank",
+                question: "A _____ is a range of IP addresses within a virtual network that helps segment the network.",
+                blanks: ["Subnet"],
+                options: ["Gateway", "Subnet", "Route", "Firewall"],
+                correct: [1],
+                explanation: "A subnet is a range of IP addresses within a virtual network. Subnets enable you to segment the virtual network into one or more sub-networks and allocate a portion of the virtual network's address space to each subnet."
+            },
+            {
+                domain: "Azure Networking",
+                type: "drag_drop",
+                question: "Match the Azure networking services with their functions:",
+                dragItems: ["Load Balancer", "Application Gateway", "Traffic Manager"],
+                dropZones: [
+                    "Layer 4 load balancing",
+                    "Layer 7 load balancing with WAF",
+                    "DNS-based global load balancing"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Load Balancer operates at Layer 4 (transport), Application Gateway at Layer 7 (application) with Web Application Firewall, and Traffic Manager provides DNS-based global traffic distribution."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "What is the purpose of a Network Security Group (NSG)?",
+                options: [
+                    "To provide DNS resolution",
+                    "To filter network traffic with security rules",
+                    "To store network configurations",
+                    "To create virtual machines"
+                ],
+                correct: 1,
+                explanation: "A Network Security Group (NSG) contains security rules that allow or deny inbound and outbound network traffic to and from several types of Azure resources, acting as a basic firewall."
+            },
+            {
+                domain: "Azure Networking",
+                type: "fill_blank",
+                question: "Azure _____ provides private connectivity between Azure datacenters and your on-premises infrastructure.",
+                blanks: ["ExpressRoute"],
+                options: ["VPN Gateway", "ExpressRoute", "Virtual WAN", "Firewall"],
+                correct: [1],
+                explanation: "Azure ExpressRoute creates private connections between Azure datacenters and infrastructure on-premises or in a colocation environment, offering more reliability, faster speeds, and lower latencies than typical internet connections."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "Which type of VPN connection allows individual client computers to connect to Azure?",
+                options: [
+                    "Site-to-Site VPN",
+                    "Point-to-Site VPN",
+                    "VNet-to-VNet VPN",
+                    "ExpressRoute"
+                ],
+                correct: 1,
+                explanation: "Point-to-Site VPN allows individual client computers to connect securely to an Azure virtual network from a remote location, useful for remote workers connecting from varying locations."
+            },
+            {
+                domain: "Azure Networking",
+                type: "drag_drop",
+                question: "Match the VPN types with their use cases:",
+                dragItems: ["Site-to-Site", "Point-to-Site", "VNet-to-VNet"],
+                dropZones: [
+                    "Connect entire on-premises network to Azure",
+                    "Connect individual computers to Azure",
+                    "Connect two Azure virtual networks"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Site-to-Site connects entire networks, Point-to-Site connects individual clients, and VNet-to-VNet connects Azure virtual networks together."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "What is VNet Peering?",
+                options: [
+                    "Connecting two virtual networks seamlessly",
+                    "Creating a backup of a virtual network",
+                    "Monitoring network traffic",
+                    "Upgrading network performance"
+                ],
+                correct: 0,
+                explanation: "VNet Peering connects two Azure virtual networks seamlessly through the Azure backbone network, enabling resources in either network to communicate with each other."
+            },
+            {
+                domain: "Azure Networking",
+                type: "fill_blank",
+                question: "Azure _____ is a managed, cloud-based network security service that protects your Azure Virtual Network resources.",
+                blanks: ["Firewall"],
+                options: ["Security", "Firewall", "Guard", "Shield"],
+                correct: [1],
+                explanation: "Azure Firewall is a managed, cloud-based network security service that protects your Azure Virtual Network resources. It's a fully stateful firewall-as-a-service with built-in high availability."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "Which Azure service provides DDoS protection?",
+                options: [
+                    "Azure Firewall",
+                    "Azure DDoS Protection",
+                    "Azure Security Center",
+                    "Network Security Groups"
+                ],
+                correct: 1,
+                explanation: "Azure DDoS Protection provides enhanced DDoS mitigation features for applications and resources deployed in virtual networks, protecting against volumetric, protocol, and resource layer attacks."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "What is Azure CDN used for?",
+                options: [
+                    "Creating virtual networks",
+                    "Caching and delivering content globally with low latency",
+                    "Managing user identities",
+                    "Storing databases"
+                ],
+                correct: 1,
+                explanation: "Azure Content Delivery Network (CDN) efficiently delivers web content to users by caching content at strategically placed physical nodes across the world, reducing latency."
+            },
+            {
+                domain: "Azure Networking",
+                type: "fill_blank",
+                question: "Azure _____ Door provides global load balancing and site acceleration for web applications.",
+                blanks: ["Front"],
+                options: ["Back", "Front", "Side", "Main"],
+                correct: [1],
+                explanation: "Azure Front Door is a global, scalable entry-point that uses Microsoft's global edge network to create fast, secure, and widely scalable web applications with global load balancing capabilities."
+            },
+            {
+                domain: "Azure Networking",
+                type: "drag_drop",
+                question: "Match the connectivity options with their characteristics:",
+                dragItems: ["VPN Gateway", "ExpressRoute", "Virtual WAN"],
+                dropZones: [
+                    "Encrypted connection over internet",
+                    "Private dedicated connection",
+                    "Unified wide area networking"
+                ],
+                correct: [0, 1, 2],
+                explanation: "VPN Gateway provides encrypted connections over the internet, ExpressRoute offers private dedicated connections, and Virtual WAN provides unified wide area networking."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "What is the difference between public and private IP addresses in Azure?",
+                options: [
+                    "Public IPs are faster",
+                    "Public IPs are accessible from internet, private IPs are for internal communication",
+                    "Private IPs cost more",
+                    "No difference"
+                ],
+                correct: 1,
+                explanation: "Public IP addresses are accessible from the internet for internet-facing resources, while private IP addresses are only accessible within Azure virtual networks for internal communication."
+            },
+            {
+                domain: "Azure Networking",
+                type: "fill_blank",
+                question: "Azure _____ provides a fully managed DNS hosting service using Microsoft Azure infrastructure.",
+                blanks: ["DNS"],
+                options: ["Domain", "DNS", "Name", "Resolution"],
+                correct: [1],
+                explanation: "Azure DNS provides a fully managed DNS hosting service using Microsoft Azure infrastructure, allowing you to host your DNS domains and manage DNS records."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "Which protocol does Azure VPN Gateway primarily use?",
+                options: [
+                    "HTTP",
+                    "FTP",
+                    "IPSec",
+                    "SMTP"
+                ],
+                correct: 2,
+                explanation: "Azure VPN Gateway primarily uses IPSec (Internet Protocol Security) protocol to create secure, encrypted tunnels for VPN connections."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "What is the default timeout for idle TCP connections in Azure Load Balancer?",
+                options: [
+                    "2 minutes",
+                    "4 minutes",
+                    "10 minutes",
+                    "30 minutes"
+                ],
+                correct: 1,
+                explanation: "The default idle timeout for TCP connections in Azure Load Balancer is 4 minutes, which can be configured between 4 and 30 minutes based on application requirements."
+            },
+            {
+                domain: "Azure Networking",
+                type: "fill_blank",
+                question: "_____ Security Groups can be applied to network interfaces, subnets, or both to control traffic flow.",
+                blanks: ["Network"],
+                options: ["Application", "Network", "Security", "Traffic"],
+                correct: [1],
+                explanation: "Network Security Groups can be applied to network interfaces, subnets, or both to filter network traffic in and out of Azure resources with security rules."
+            },
+            {
+                domain: "Azure Networking",
+                type: "drag_drop",
+                question: "Match the Azure networking components with their purposes:",
+                dragItems: ["Route Tables", "Service Endpoints", "Private Endpoints"],
+                dropZones: [
+                    "Custom routing for network traffic",
+                    "Direct access to Azure services over backbone",
+                    "Private IP access to Azure services"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Route Tables control traffic routing, Service Endpoints provide direct Azure service access over the backbone network, and Private Endpoints enable private IP access to Azure services."
+            },
+            {
+                domain: "Azure Networking",
+                type: "multiple_choice",
+                question: "Which Azure service helps optimize application performance globally through intelligent routing?",
+                options: [
+                    "Azure Load Balancer",
+                    "Azure Traffic Manager",
+                    "Azure Application Gateway",
+                    "Azure VPN Gateway"
+                ],
+                correct: 1,
+                explanation: "Azure Traffic Manager uses DNS-based traffic routing to distribute traffic optimally to services across global Azure regions, providing high availability and responsiveness."
+            },
+
+            // Security & Compliance (20 questions)
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "What is Azure Active Directory (Azure AD)?",
+                options: [
+                    "A file storage service",
+                    "Microsoft's cloud-based identity and access management service",
+                    "A virtual machine service",
+                    "A networking service"
+                ],
+                correct: 1,
+                explanation: "Azure Active Directory (Azure AD) is Microsoft's cloud-based identity and access management service that helps employees access external resources and manage user identities."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "fill_blank",
+                question: "_____ authentication requires users to provide two or more verification factors to gain access to resources.",
+                blanks: ["Multi-factor"],
+                options: ["Single-factor", "Multi-factor", "Dual-factor", "Triple-factor"],
+                correct: [1],
+                explanation: "Multi-factor authentication (MFA) requires users to provide two or more verification factors, significantly increasing security by requiring something you know, have, or are."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "drag_drop",
+                question: "Match the Azure security services with their primary functions:",
+                dragItems: ["Key Vault", "Security Center", "Sentinel"],
+                dropZones: [
+                    "Secure storage for secrets and keys",
+                    "Security posture management",
+                    "Security information and event management (SIEM)"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Key Vault securely stores secrets and keys, Security Center provides security posture management, and Sentinel offers SIEM and SOAR capabilities."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "What is Role-Based Access Control (RBAC) in Azure?",
+                options: [
+                    "A network security feature",
+                    "A method to control access to Azure resources based on user roles",
+                    "A storage encryption method",
+                    "A monitoring service"
+                ],
+                correct: 1,
+                explanation: "Role-Based Access Control (RBAC) helps you manage who has access to Azure resources, what they can do with those resources, and what areas they have access to."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "fill_blank",
+                question: "Azure _____ Vault is a cloud service for securely storing and accessing secrets, keys, and certificates.",
+                blanks: ["Key"],
+                options: ["Secret", "Key", "Security", "Safe"],
+                correct: [1],
+                explanation: "Azure Key Vault helps safeguard cryptographic keys and secrets used by cloud applications and services, providing secure storage and access management."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "Which Azure service provides unified security management and advanced threat protection?",
+                options: [
+                    "Azure Monitor",
+                    "Azure Security Center",
+                    "Azure Policy",
+                    "Azure Advisor"
+                ],
+                correct: 1,
+                explanation: "Azure Security Center provides unified security management and advanced threat protection across hybrid cloud workloads, helping strengthen security posture."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "drag_drop",
+                question: "Match the compliance offerings with their focus areas:",
+                dragItems: ["GDPR", "HIPAA", "SOC"],
+                dropZones: [
+                    "European data protection regulation",
+                    "Healthcare data protection",
+                    "Service organization controls"
+                ],
+                correct: [0, 1, 2],
+                explanation: "GDPR focuses on European data protection, HIPAA covers healthcare data protection in the US, and SOC provides service organization control frameworks."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "What is the shared responsibility model in cloud security?",
+                options: [
+                    "Only Microsoft is responsible for security",
+                    "Only customers are responsible for security",
+                    "Security responsibilities are shared between Microsoft and customers",
+                    "Security is handled by third parties"
+                ],
+                correct: 2,
+                explanation: "The shared responsibility model defines security responsibilities between cloud providers and customers, with both parties responsible for different aspects of security."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "fill_blank",
+                question: "Azure _____ provides cloud security posture management and workload protection for hybrid and multi-cloud environments.",
+                blanks: ["Defender"],
+                options: ["Guardian", "Defender", "Protector", "Shield"],
+                correct: [1],
+                explanation: "Azure Defender (now part of Microsoft Defender for Cloud) provides cloud security posture management and workload protection across hybrid and multi-cloud environments."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "What is Azure Policy used for?",
+                options: [
+                    "Network routing",
+                    "Enforcing governance and compliance rules",
+                    "Data storage",
+                    "User authentication"
+                ],
+                correct: 1,
+                explanation: "Azure Policy helps enforce organizational standards and assess compliance at scale by creating, assigning, and managing policies that apply rules and effects over resources."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "Which type of encryption does Azure use for data at rest?",
+                options: [
+                    "AES-128",
+                    "AES-256",
+                    "DES",
+                    "RSA"
+                ],
+                correct: 1,
+                explanation: "Azure uses AES-256 encryption for data at rest across its services, providing strong encryption to protect stored data from unauthorized access."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "fill_blank",
+                question: "_____ is the process of verifying a user's identity, while authorization determines what they can access.",
+                blanks: ["Authentication"],
+                options: ["Authorization", "Authentication", "Accounting", "Auditing"],
+                correct: [1],
+                explanation: "Authentication verifies who a user is, while authorization determines what resources and operations that authenticated user can access."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "drag_drop",
+                question: "Match the security concepts with their definitions:",
+                dragItems: ["Confidentiality", "Integrity", "Availability"],
+                dropZones: [
+                    "Information is accessible only to authorized users",
+                    "Information is accurate and hasn't been tampered with",
+                    "Information and services are accessible when needed"
+                ],
+                correct: [0, 1, 2],
+                explanation: "These form the CIA triad: Confidentiality ensures data privacy, Integrity ensures data accuracy, and Availability ensures data accessibility when needed."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "What is Azure Information Protection used for?",
+                options: [
+                    "Network security",
+                    "Data classification and protection",
+                    "Virtual machine management",
+                    "Storage optimization"
+                ],
+                correct: 1,
+                explanation: "Azure Information Protection helps organizations discover, classify, and protect documents and emails by applying labels that can automatically protect content."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "fill_blank",
+                question: "Azure _____ provides a cloud-native SIEM and SOAR solution for intelligent security analytics.",
+                blanks: ["Sentinel"],
+                options: ["Guardian", "Sentinel", "Watchdog", "Monitor"],
+                correct: [1],
+                explanation: "Azure Sentinel is a scalable, cloud-native SIEM (Security Information and Event Management) and SOAR (Security Orchestration, Automation, and Response) solution."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "Which Azure feature helps protect against DDoS attacks?",
+                options: [
+                    "Azure Firewall only",
+                    "Azure DDoS Protection",
+                    "Network Security Groups only",
+                    "Azure Load Balancer only"
+                ],
+                correct: 1,
+                explanation: "Azure DDoS Protection provides enhanced mitigation features specifically designed to protect against Distributed Denial of Service attacks on Azure resources."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "What is Conditional Access in Azure AD?",
+                options: [
+                    "A storage access method",
+                    "A feature that enforces access policies based on conditions",
+                    "A networking protocol",
+                    "A backup service"
+                ],
+                correct: 1,
+                explanation: "Conditional Access is an Azure AD feature that enforces access policies based on conditions like user location, device, application, and risk level to enhance security."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "fill_blank",
+                question: "_____ identity uses machine learning to detect suspicious activities and identity-based risks.",
+                blanks: ["Identity Protection"],
+                options: ["Identity Guard", "Identity Protection", "Identity Security", "Identity Monitor"],
+                correct: [1],
+                explanation: "Azure AD Identity Protection uses machine learning algorithms to detect suspicious activities and identity-based risks, providing automated responses to protect identities."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "drag_drop",
+                question: "Match the Azure governance tools with their purposes:",
+                dragItems: ["Azure Policy", "Blueprints", "Management Groups"],
+                dropZones: [
+                    "Enforce rules and compliance",
+                    "Deploy governance artifacts at scale",
+                    "Organize subscriptions hierarchically"
+                ],
+                correct: [0, 1, 2],
+                explanation: "Azure Policy enforces compliance rules, Blueprints deploy governance artifacts at scale, and Management Groups provide hierarchical organization of subscriptions."
+            },
+            {
+                domain: "Security & Compliance",
+                type: "multiple_choice",
+                question: "What is the Trust Center in Microsoft Azure?",
+                options: [
+                    "A data center location",
+                    "A resource providing information about Microsoft's approach to security, privacy, and compliance",
+                    "A customer support center",
+                    "A billing center"
+                ],
+                correct: 1,
+                explanation: "The Microsoft Trust Center is a resource that provides information about Microsoft's approach to security, privacy, and compliance across its cloud services."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let answered = false;
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestion];
+            const quizContent = document.getElementById('quizContent');
+            
+            // Update navigation
+            document.getElementById('questionCounter').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('domainIndicator').textContent = questionData.domain;
+            
+            let questionHTML = '';
+            
+            if (questionData.type === 'multiple_choice') {
+                questionHTML = `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-type">Multiple Choice</div>
+                            <div class="question">${questionData.question}</div>
+                        </div>
+                        <div class="question-content">
+                            <ul class="options">
+                                ${questionData.options.map((option, index) => `
+                                    <li class="option">
+                                        <label>
+                                            <input type="radio" name="answer" value="${index}">
+                                            ${option}
+                                        </label>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            } else if (questionData.type === 'fill_blank') {
+                questionHTML = `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-type">Fill in the Blank</div>
+                            <div class="question">${questionData.question}</div>
+                        </div>
+                        <div class="question-content">
+                            <div class="fill-blank-container">
+                                <div class="blank-sentence">
+                                    Complete the sentence by selecting the correct option.
+                                </div>
+                                <div class="blank-options">
+                                    ${questionData.options.map((option, index) => `
+                                        <div class="blank-option" data-value="${index}">${option}</div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (questionData.type === 'drag_drop') {
+                // Shuffle the drag items to make it more challenging
+                const shuffledItems = [...questionData.dragItems];
+                const originalIndices = shuffledItems.map((_, index) => index);
+                
+                // Fisher-Yates shuffle algorithm
+                for (let i = shuffledItems.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledItems[i], shuffledItems[j]] = [shuffledItems[j], shuffledItems[i]];
+                    [originalIndices[i], originalIndices[j]] = [originalIndices[j], originalIndices[i]];
+                }
+                
+                questionHTML = `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-type">Drag and Drop</div>
+                            <div class="question">${questionData.question}</div>
+                        </div>
+                        <div class="question-content">
+                            <div class="drag-drop-container">
+                                <div class="drag-items">
+                                    <h4>Drag these items:</h4>
+                                    ${shuffledItems.map((item, displayIndex) => `
+                                        <div class="drag-item" draggable="true" data-index="${originalIndices[displayIndex]}">${item}</div>
+                                    `).join('')}
+                                </div>
+                                <div class="drop-zones">
+                                    <h4>Drop them here:</h4>
+                                    ${questionData.dropZones.map((zone, index) => `
+                                        <div class="drop-zone" data-index="${index}">${zone}</div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            quizContent.innerHTML = questionHTML;
+            
+            // Reset state
+            answered = false;
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+            
+            // Add event listeners based on question type
+            if (questionData.type === 'multiple_choice') {
+                const radioButtons = document.querySelectorAll('input[name="answer"]');
+                radioButtons.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        userAnswers[currentQuestion] = parseInt(this.value);
+                        document.getElementById('submitBtn').disabled = false;
+                    });
+                });
+            } else if (questionData.type === 'fill_blank') {
+                const blankOptions = document.querySelectorAll('.blank-option');
+                blankOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        blankOptions.forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                        userAnswers[currentQuestion] = [parseInt(this.dataset.value)];
+                        document.getElementById('submitBtn').disabled = false;
+                    });
+                });
+            } else if (questionData.type === 'drag_drop') {
+                setupDragAndDrop();
+            }
+            
+            updateProgress();
+            
+            // Show/hide previous button
+            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'inline-block' : 'none';
+        }
+
+        function setupDragAndDrop() {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            let draggedItem = null;
+            
+            userAnswers[currentQuestion] = new Array(dropZones.length).fill(-1);
+            
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    draggedItem = this;
+                    this.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                    draggedItem = null;
+                });
+            });
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('drag-over');
+                });
+                
+                zone.addEventListener('dragleave', function() {
+                    this.classList.remove('drag-over');
+                });
+                
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    
+                    if (draggedItem) {
+                        // Remove item from other zones
+                        dropZones.forEach(z => {
+                            if (z.textContent.includes(draggedItem.textContent) && z !== this) {
+                                z.textContent = z.dataset.originalText || zone.textContent;
+                                z.classList.remove('filled');
+                            }
+                        });
+                        
+                        // Store original text if not already stored
+                        if (!this.dataset.originalText) {
+                            this.dataset.originalText = this.textContent;
+                        }
+                        
+                        // Add item to this zone
+                        this.textContent = draggedItem.textContent;
+                        this.classList.add('filled');
+                        
+                        // Update user answer
+                        const zoneIndex = parseInt(this.dataset.index);
+                        const itemIndex = parseInt(draggedItem.dataset.index);
+                        userAnswers[currentQuestion][zoneIndex] = itemIndex;
+                        
+                        // Check if all zones are filled
+                        if (userAnswers[currentQuestion].every(answer => answer !== -1)) {
+                            document.getElementById('submitBtn').disabled = false;
+                        }
+                    }
+                });
+            });
+        }
+
+        function submitAnswer() {
+            if (answered) return;
+            
+            answered = true;
+            const questionData = questions[currentQuestion];
+            let isCorrect = false;
+            
+            if (questionData.type === 'multiple_choice') {
+                isCorrect = userAnswers[currentQuestion] === questionData.correct;
+                
+                const options = document.querySelectorAll('.option');
+                options.forEach((option, index) => {
+                    if (index === questionData.correct) {
+                        option.classList.add('correct');
+                    } else if (index === userAnswers[currentQuestion] && index !== questionData.correct) {
+                        option.classList.add('incorrect');
+                    }
+                });
+            } else if (questionData.type === 'fill_blank') {
+                isCorrect = JSON.stringify(userAnswers[currentQuestion]) === JSON.stringify(questionData.correct);
+                
+                const blankOptions = document.querySelectorAll('.blank-option');
+                blankOptions.forEach((option, index) => {
+                    if (questionData.correct.includes(index)) {
+                        option.style.background = '#d4edda';
+                        option.style.borderColor = '#28a745';
+                        option.style.color = '#155724';
+                    } else if (userAnswers[currentQuestion] && userAnswers[currentQuestion].includes(index) && !questionData.correct.includes(index)) {
+                        option.style.background = '#f8d7da';
+                        option.style.borderColor = '#dc3545';
+                        option.style.color = '#721c24';
+                    }
+                });
+            } else if (questionData.type === 'drag_drop') {
+                isCorrect = JSON.stringify(userAnswers[currentQuestion]) === JSON.stringify(questionData.correct);
+                
+                const dropZones = document.querySelectorAll('.drop-zone');
+                dropZones.forEach((zone, index) => {
+                    if (userAnswers[currentQuestion][index] === questionData.correct[index]) {
+                        zone.classList.add('correct');
+                    } else {
+                        zone.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            // Show explanation
+            const explanation = document.createElement('div');
+            explanation.className = 'explanation';
+            explanation.innerHTML = `
+                <h4>💡 Explanation:</h4>
+                <p>${questionData.explanation}</p>
+            `;
+            document.querySelector('.question-container').appendChild(explanation);
+            
+            updateScore();
+            document.getElementById('submitBtn').style.display = 'none';
+            
+            if (currentQuestion < questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                
+                // If this question was already answered, show the result
+                if (userAnswers[currentQuestion] !== undefined) {
+                    setTimeout(submitAnswer, 100);
+                }
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${Math.round(progress)}% Complete`;
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `${score}/${currentQuestion + 1}`;
+        }
+
+        function showFinalResults() {
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            // Calculate performance by domain
+            const domainStats = {};
+            questions.forEach((q, index) => {
+                if (!domainStats[q.domain]) {
+                    domainStats[q.domain] = { total: 0, correct: 0 };
+                }
+                domainStats[q.domain].total++;
+                
+                let isCorrect = false;
+                if (q.type === 'multiple_choice') {
+                    isCorrect = userAnswers[index] === q.correct;
+                } else if (q.type === 'fill_blank' || q.type === 'drag_drop') {
+                    isCorrect = JSON.stringify(userAnswers[index]) === JSON.stringify(q.correct);
+                }
+                
+                if (isCorrect) {
+                    domainStats[q.domain].correct++;
+                }
+            });
+            
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 85) {
+                message = 'Outstanding! You\'re well prepared for the AZ-900 exam!';
+                emoji = '🌟';
+            } else if (percentage >= 75) {
+                message = 'Great job! You have solid knowledge across most areas!';
+                emoji = '🎯';
+            } else if (percentage >= 65) {
+                message = 'Good progress! Review the explanations and focus on weaker areas.';
+                emoji = '📚';
+            } else {
+                message = 'Keep studying! Focus on the fundamentals and try again.';
+                emoji = '💪';
+            }
+            
+            const domainCardsHTML = Object.entries(domainStats).map(([domain, stats]) => {
+                const domainPercentage = Math.round((stats.correct / stats.total) * 100);
+                return `
+                    <div class="result-card">
+                        <h3>${domainPercentage}%</h3>
+                        <p>${domain}</p>
+                        <p style="font-size: 0.9em; opacity: 0.8;">${stats.correct}/${stats.total} correct</p>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('quizContent').innerHTML = `
+                <div class="final-results">
+                    <h2>${emoji} Exam Complete!</h2>
+                    <div class="score-circle">
+                        ${percentage}%
+                    </div>
+                    <p style="font-size: 1.4em; margin: 25px 0; font-weight: 500;">
+                        You scored ${score} out of ${questions.length} questions correctly.
+                    </p>
+                    <p style="font-size: 1.2em; opacity: 0.95; line-height: 1.5; margin-bottom: 30px;">
+                        ${message}
+                    </p>
+                    
+                    <h3 style="margin-bottom: 20px;">Performance by Domain:</h3>
+                    <div class="results-grid">
+                        ${domainCardsHTML}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'inline-block';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            answered = false;
+            document.getElementById('restartBtn').style.display = 'none';
+            loadQuestion();
+            updateScore();
+        }
+
+        // Initialize quiz
+        loadQuestion();
+        updateScore();
+    </script>
+</body>
+</html>
