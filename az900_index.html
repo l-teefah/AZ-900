@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ-900 Azure Fundamentals Study Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0078d4;
+            margin-bottom: 5px;
+        }
+
+        .study-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #0078d4, #00bcf2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .section-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .section-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #0078d4;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .section-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0078d4, #00bcf2);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0078d4, #106ebe);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #106ebe, #005a9e);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(0,120,212,0.1);
+            color: #0078d4;
+            border: 2px solid #0078d4;
+        }
+
+        .btn-secondary:hover {
+            background: #0078d4;
+            color: white;
+        }
+
+        .study-timer {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #0078d4;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .section-card {
+                padding: 20px;
+            }
+            
+            .timer-display {
+                font-size: 2rem;
+            }
+            
+            .study-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .study-streak {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .streak-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>☁️ AZ-900 Study Hub</h1>
+            <p>Master Microsoft Azure Fundamentals</p>
+        </div>
+
+        <div class="study-streak">
+            <div>🔥 Study Streak</div>
+            <div class="streak-number" id="streakCounter">0</div>
+            <div>days</div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalSessions">0</div>
+                <div>Study Sessions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalTime">0h 0m</div>
+                <div>Total Study Time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="overallProgress">0%</div>
+                <div>Overall Progress</div>
+            </div>
+        </div>
+
+        <div class="study-timer">
+            <h3 style="margin-bottom: 20px; color: #333;">📚 Study Timer</h3>
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-controls">
+                <button class="btn btn-primary" onclick="startTimer()">▶️ Start</button>
+                <button class="btn btn-secondary" onclick="pauseTimer()">⏸️ Pause</button>
+                <button class="btn btn-secondary" onclick="resetTimer()">🔄 Reset</button>
+                <button class="btn btn-secondary" onclick="setTimer(15)">15 min</button>
+                <button class="btn btn-secondary" onclick="setTimer(25)">25 min</button>
+                <button class="btn btn-secondary" onclick="setTimer(45)">45 min</button>
+            </div>
+        </div>
+
+        <div class="study-sections">
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">🏗️</div>
+                    <div class="section-title">Azure Fundamentals</div>
+                </div>
+                <div class="section-description">
+                    Core concepts, cloud computing principles, and Azure architecture basics. Perfect starting point for your certification journey.
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" data-section="fundamentals"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: #666;">
+                    <span>Progress: <span id="fundamentals-progress">0%</span></span>
+                    <span id="fundamentals-time">0 min studied</span>
+                </div>
+                <div class="section-actions">
+                    <a href="fundamentals.html" class="btn btn-primary" onclick="trackSectionStart('fundamentals')">🚀 Start Quiz</a>
+                    <button class="btn btn-secondary" onclick="markComplete('fundamentals')">✅ Mark Complete</button>
+                </div>
+                <div id="fundamentals-badge"></div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">⚙️</div>
+                    <div class="section-title">Azure Services</div>
+                </div>
+                <div class="section-description">
+                    Comprehensive overview of Azure services including compute, storage, networking, and databases. Essential knowledge for the exam.
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" data-section="services"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: #666;">
+                    <span>Progress: <span id="services-progress">0%</span></span>
+                    <span id="services-time">0 min studied</span>
+                </div>
+                <div class="section-actions">
+                    <a href="services.html" class="btn btn-primary" onclick="trackSectionStart('services')">🚀 Start Quiz</a>
+                    <button class="btn btn-secondary" onclick="markComplete('services')">✅ Mark Complete</button>
+                </div>
+                <div id="services-badge"></div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">🔒</div>
+                    <div class="section-title">Security & Compliance</div>
+                </div>
+                <div class="section-description">
+                    Azure security features, identity management, compliance standards, and governance. Critical for understanding Azure's security model.
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" data-section="security"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; color: #666;">
+                    <span>Progress: <span id="security-progress">0%</span></span>
+                    <span id="security-time">0 min studied</span>
+                </div>
+                <div class="section-actions">
+                    <a href="security.html" class="btn btn-primary" onclick="trackSectionStart('security')">🚀 Start Quiz</a>
+                    <button class="btn btn-secondary" onclick="markComplete('security')">✅ Mark Complete</button>
+                </div>
+                <div id="security-badge"></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: white; opacity: 0.8; margin-top: 40px;">
+            <p>💡 Tip: Use the Pomodoro Technique - study for 25 minutes, then take a 5-minute break!</p>
+            <p style="margin-top: 10px;">🎯 Goal: Complete all sections for your AZ-900 certification</p>
+        </div>
+    </div>
+
+    <script>
+        // Study data storage (in-memory for session)
+        let studyData = {
+            totalSessions: 0,
+            totalTimeMinutes: 0,
+            sectionsProgress: {
+                fundamentals: 0,
+                services: 0,
+                security: 0
+            },
+            sectionTimes: {
+                fundamentals: 0,
+                services: 0,
+                security: 0
+            },
+            streak: 0
+        };
+
+        // Timer variables
+        let timer = null;
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let isRunning = false;
+        let currentSection = null;
+
+        // Initialize the page
+        function init() {
+            updateDisplay();
+            updateProgress();
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                studyData.totalSessions++;
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                        
+                        // Track study time
+                        studyData.totalTimeMinutes += 1/60;
+                        if (currentSection) {
+                            studyData.sectionTimes[currentSection] += 1/60;
+                        }
+                        
+                        updateDisplay();
+                    } else {
+                        completeSession();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timer);
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+        }
+
+        function setTimer(minutes) {
+            pauseTimer();
+            timeLeft = minutes * 60;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function completeSession() {
+            pauseTimer();
+            alert('🎉 Study session completed! Great job!');
+            
+            // Increase streak
+            studyData.streak++;
+            
+            // Auto-progress current section
+            if (currentSection) {
+                studyData.sectionsProgress[currentSection] = Math.min(100, studyData.sectionsProgress[currentSection] + 25);
+            }
+            
+            updateDisplay();
+            updateProgress();
+            resetTimer();
+        }
+
+        // Progress tracking
+        function trackSectionStart(section) {
+            currentSection = section;
+            if (studyData.sectionsProgress[section] === 0) {
+                studyData.sectionsProgress[section] = 10; // Starting bonus
+            }
+            updateProgress();
+        }
+
+        function markComplete(section) {
+            studyData.sectionsProgress[section] = 100;
+            showAchievement(section);
+            updateProgress();
+        }
+
+        function showAchievement(section) {
+            const badgeElement = document.getElementById(section + '-badge');
+            badgeElement.innerHTML = '<div class="achievement-badge">🏆 Completed!</div>';
+            
+            // Add pulse animation
+            badgeElement.firstChild.classList.add('pulse');
+        }
+
+        function updateProgress() {
+            const sections = ['fundamentals', 'services', 'security'];
+            
+            sections.forEach(section => {
+                const progress = studyData.sectionsProgress[section];
+                const progressElement = document.querySelector(`[data-section="${section}"]`);
+                const progressText = document.getElementById(section + '-progress');
+                const timeText = document.getElementById(section + '-time');
+                
+                progressElement.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+                timeText.textContent = Math.round(studyData.sectionTimes[section]) + ' min studied';
+            });
+
+            // Update overall progress
+            const overall = (studyData.sectionsProgress.fundamentals + 
+                           studyData.sectionsProgress.services + 
+                           studyData.sectionsProgress.security) / 3;
+            document.getElementById('overallProgress').textContent = Math.round(overall) + '%';
+        }
+
+        function updateDisplay() {
+            document.getElementById('totalSessions').textContent = studyData.totalSessions;
+            document.getElementById('streakCounter').textContent = studyData.streak;
+            
+            const hours = Math.floor(studyData.totalTimeMinutes / 60);
+            const minutes = Math.round(studyData.totalTimeMinutes % 60);
+            document.getElementById('totalTime').textContent = `${hours}h ${minutes}m`;
+        }
+
+        // Initialize when page loads
+        window.onload = init;
+
+        // Add some interactive feedback
+        document.querySelectorAll('.section-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
