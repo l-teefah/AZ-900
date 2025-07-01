@@ -1,7 +1,7 @@
 # ☁️ AZ-900 Azure Fundamentals Study Hub
 
 An interactive web-based study platform for Microsoft Azure AZ-900 certification preparation. This repository contains comprehensive quiz materials and a 
-modern study interface to help master Azure fundamentals, I used it to prepare and study when I took AZ-900 exam, my notes can also be accessed [here](https://github.com/l-teefah/AZ-900/blob/main/MS%20AZ-900.pdf).
+modern study interface to help master Azure fundamentals, I used it to prepare and study when I took AZ-900 exam. Also,my notes can be accessed [here](https://github.com/l-teefah/AZ-900/blob/main/MS%20AZ-900.pdf).
 
 
 ## 🚀 Live Demo
